@@ -1,8 +1,8 @@
 # RailsAssetslessContainer
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/rails_assetsless_container`. To experiment with that code, run `bin/console` for an interactive prompt.
+If you're delivering assets via a CDN, you don't need to include assets in your container.
 
-TODO: Delete this and the text above, and describe your gem
+This gem provides a way to do that.
 
 ## Installation
 
@@ -20,9 +20,72 @@ Or install it yourself as:
 
     $ gem install rails_assetsless_container
 
-## Usage
+## Configuration
 
-TODO: Write usage instructions here
+It is disabled by default, so specify it explicitly with `config/environments/production.rb`.
+
+```ruby
+Rails.application.configure do
+  # some settings
+end
+
+RailsAssetslessContainer.configure do |config|
+  config.enabled = true
+end
+```
+
+## Strategy
+
+### AssetServer (default)
+
+Save the manifest file as `manifest-<suffix>.json` after `assets:precompile`.
+
+Download `manifest-<suffix>.json` via CDN and save it as `manifest.json` before starting the server.
+
+see: [lib/rails_assetsless_container/strategy/asset_server.rb](https://github.com/sinsoku/rails_assetsless_container/blob/main/lib/rails_assetsless_container/strategy/asset_server.rb)
+
+### Log
+
+A strategy for checking each method call for debugging.
+
+```ruby
+RailsAssetslessContainer.configure do |config|
+  config.enabled = true
+  logger = Logger.new(STDOUT)
+  config.strategy = RailsAssetslessContainer::Strategy::Log.new(logger)
+end
+```
+
+see: [lib/rails_assetsless_container/strategy/log.rb](https://github.com/sinsoku/rails_assetsless_container/blob/main/lib/rails_assetsless_container/strategy/log.rb)
+
+### Custom
+
+You can also use custom strategy.
+
+```ruby
+class CustomStrategy < RailsAssetslessContainer::Strategy::Base
+  def after_sprockets(path)
+    # To save the manifest from `path`.
+  end
+
+  def after_webpacker(path)
+    # To save the manifest from `path`.
+  end
+
+  def write_sprockets_manifest(path)
+    # To write the manifest to `path`.
+  end
+
+  def write_webpacker_manifest(path)
+    # To write the manifest to `path`.
+  end
+end
+
+RailsAssetslessContainer.configure do |config|
+  config.enabled = true
+  config.strategy = CustomStrategy.new
+end
+```
 
 ## Development
 
@@ -32,7 +95,7 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/rails_assetsless_container. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [code of conduct](https://github.com/[USERNAME]/rails_assetsless_container/blob/main/CODE_OF_CONDUCT.md).
+Bug reports and pull requests are welcome on GitHub at https://github.com/sinsoku/rails_assetsless_container. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [code of conduct](https://github.com/sinsoku/rails_assetsless_container/blob/main/CODE_OF_CONDUCT.md).
 
 ## License
 
@@ -40,4 +103,4 @@ The gem is available as open source under the terms of the [MIT License](https:/
 
 ## Code of Conduct
 
-Everyone interacting in the RailsAssetslessContainer project's codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/[USERNAME]/rails_assetsless_container/blob/main/CODE_OF_CONDUCT.md).
+Everyone interacting in the RailsAssetslessContainer project's codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/sinsoku/rails_assetsless_container/blob/main/CODE_OF_CONDUCT.md).

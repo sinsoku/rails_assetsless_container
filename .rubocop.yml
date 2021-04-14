@@ -1,5 +1,9 @@
+require:
+  - rubocop-rake
+  - rubocop-rspec
+
 AllCops:
-  TargetRubyVersion: 2.4
+  NewCops: enable
 
 Style/StringLiterals:
   Enabled: true
@@ -11,3 +15,17 @@ Style/StringLiteralsInInterpolation:
 
 Layout/LineLength:
   Max: 120
+
+Style/Documentation:
+  Enabled: false
+
+Lint/MissingSuper:
+  Exclude:
+    - 'lib/rails_assetsless_container/strategy/*.rb'
+
+Metrics/BlockLength:
+  IgnoredMethods:
+    - describe
+
+RSpec/MultipleExpectations:
+  Max: 5
