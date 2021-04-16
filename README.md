@@ -1,3 +1,6 @@
+[![Gem Version](https://badge.fury.io/rb/rails_assetsless_container.svg)](https://badge.fury.io/rb/rails_assetsless_container)
+[![Ruby](https://github.com/sinsoku/rails_assetsless_container/actions/workflows/main.yml/badge.svg)](https://github.com/sinsoku/rails_assetsless_container/actions/workflows/main.yml)
+
 # RailsAssetslessContainer
 
 If you're delivering assets via a CDN, you don't need to include assets in your container.
